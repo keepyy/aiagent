@@ -14,6 +14,7 @@ class ReviewItem:
     created_at: str
     state_snapshot: dict[str, Any]
     critic_report: dict[str, Any] = field(default_factory=dict)
+    human_decision: str = ""  # approved, rejected, edited, or empty for pending
 
 
 class ReviewQueueStore:
@@ -38,6 +39,7 @@ class ReviewQueueStore:
                 created_at=datetime.now(timezone.utc).isoformat(),
                 state_snapshot=kwargs.get("state_snapshot", {}),
                 critic_report=kwargs.get("critic_report", {}),
+                human_decision=kwargs.get("human_decision", ""),
             )
             self._items[meeting_id] = item
             return item
@@ -51,7 +53,7 @@ class ReviewQueueStore:
             return [
                 i
                 for i in self._items.values()
-                if i.phase in ("awaiting_human", "critiquing")
+                if i.phase in ("awaiting_human", "critiquing", "approved", "rejected")
             ]
 
     def get(self, meeting_id: str) -> ReviewItem | None:

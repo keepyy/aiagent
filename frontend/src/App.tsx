@@ -53,8 +53,9 @@ export default function App() {
         return;
       }
       const data = await res.json();
-      setCanDecide(Boolean(data.can_decide));
-      if (data.can_decide) void refreshQueue();
+      const isPending = Boolean(data.can_decide);
+      setCanDecide(isPending);
+      if (isPending) void refreshQueue();
     } catch {
       setCanDecide(false);
     }

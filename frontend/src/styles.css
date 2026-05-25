@@ -246,6 +246,9 @@ button {
 .badge.fail {
   color: var(--danger);
 }
+.badge.warn {
+  color: var(--warn);
+}
 
 .arch-diagram {
   font-family: "JetBrains Mono", monospace;

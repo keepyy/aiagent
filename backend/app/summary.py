@@ -13,6 +13,7 @@ ACTION_TYPE_ZH = {
 def build_review_summary(
     state: dict[str, Any],
     critic_report: dict[str, Any] | None = None,
+    human_decision: str = "",
 ) -> dict[str, Any]:
     """生成队列卡片展示字段（非最终人工结论，仅为机审+抽取摘要）。"""
     actions = state.get("action_items") or []
@@ -53,6 +54,14 @@ def build_review_summary(
         summary = (state.get("transcript") or "")[:80]
 
     metrics = report.get("metrics") or {}
+    
+    human_status_map = {
+        "approved": "已批准",
+        "rejected": "已驳回",
+        "edited": "已编辑",
+    }
+    human_status = human_status_map.get(human_decision, "待人工审核")
+    
     return {
         "summary": summary,
         "action_previews": action_previews,
@@ -63,5 +72,5 @@ def build_review_summary(
         "critic_passed": passed,
         "critic_label": "机审通过" if passed else "机审未通过",
         "issue_count": len(issues),
-        "human_status": "待人工审核",
+        "human_status": human_status,
     }

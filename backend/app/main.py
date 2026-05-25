@@ -248,7 +248,7 @@ async def list_review_queue():
     result_items = []
     for i in items:
         snap = i.state_snapshot or {}
-        meta = build_review_summary(snap, i.critic_report)
+        meta = build_review_summary(snap, i.critic_report, i.human_decision)
         result_items.append(
             {
                 "meeting_id": i.meeting_id,
@@ -316,7 +316,14 @@ async def decide_review(meeting_id: str, body: ReviewRequest):
     state = result.get("state") or {}
     if not state.get("meeting_id"):
         raise HTTPException(500, "审核恢复失败，请重试或重新运行流水线")
-    review_queue.remove(meeting_id)
+    
+    phase = state.get("phase") or "approved" if body.decision == "approved" else "rejected"
+    review_queue.upsert(
+        meeting_id,
+        phase=phase,
+        human_decision=body.decision,
+        state_snapshot=_public_state(state),
+    )
 
     await event_bus.publish(
         meeting_id,

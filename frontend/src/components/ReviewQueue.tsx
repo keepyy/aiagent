@@ -10,6 +10,32 @@ interface Props {
 function ReviewCard({ item, selected, onSelect }: { item: ReviewQueueItem; selected: boolean; onSelect: () => void }) {
   const previews = item.action_previews || [];
   const passed = item.critic_passed;
+  
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "已批准":
+        return "var(--success)";
+      case "已驳回":
+        return "var(--danger)";
+      case "已编辑":
+        return "var(--warn)";
+      default:
+        return "var(--human)";
+    }
+  };
+  
+  const getStatusBadgeClass = (status: string) => {
+    switch (status) {
+      case "已批准":
+        return "pass";
+      case "已驳回":
+        return "fail";
+      case "已编辑":
+        return "warn";
+      default:
+        return "";
+    }
+  };
 
   return (
     <div
@@ -21,7 +47,7 @@ function ReviewCard({ item, selected, onSelect }: { item: ReviewQueueItem; selec
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem" }}>
         <strong>{item.meeting_id.slice(0, 8)}…</strong>
-        <span className="badge" style={{ color: "var(--human)" }}>
+        <span className={`badge ${getStatusBadgeClass(item.human_status || "")}`} style={{ color: getStatusColor(item.human_status || "") }}>
           {item.human_status || "待人工审核"}
         </span>
       </div>
