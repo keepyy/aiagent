@@ -2,6 +2,9 @@
 
 基于 **LangGraph** 的 **Plan-Executor-Critic** 架构，实现说话人分离、待办抽取、行动项知识图谱槽位填充，并配备 **人工审核队列** 与 **SSE 流式前端**（Zustand 状态管理 + Human-in-the-loop）。
 
+![alt text](image.png)
+![alt text](image-1.png)
+
 ## 架构
 
 ```mermaid
